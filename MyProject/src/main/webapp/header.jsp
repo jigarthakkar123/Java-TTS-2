@@ -63,6 +63,9 @@
                               	%>
                               			<li><a href="logout.jsp">Logout(<%=u.getFname() %>)</a></li>
                               			<li><a href="changePassword.jsp">Change Password</a></li>
+                              			<li><a href="wishlist.jsp">Wishlist(<%=session.getAttribute("wishlist_count") %>)</a></li>
+                              			<li><a href="cart.jsp">Cart(<%=session.getAttribute("cart_count") %>)</a></li>
+                              			<li><a href="myorder.jsp">My Orders</a></li>
                               	<%
                            			}
                               	%>

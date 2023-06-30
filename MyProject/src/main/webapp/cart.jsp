@@ -1,3 +1,7 @@
+<%@page import="com.dao.CartDao"%>
+<%@page import="com.bean.Cart"%>
+<%@page import="com.dao.WishlistDao"%>
+<%@page import="com.bean.Wishlist"%>
 <%@page import="com.dao.ProductDao"%>
 <%@page import="com.bean.Product"%>
 <%@page import="java.util.List"%>
@@ -7,6 +11,14 @@
 <!DOCTYPE html>
 <html>
    <head>
+   <style type="text/css">
+	.bttnStyle
+	{
+		background-color: lightblue;
+		border-radius: 0.50rem;
+		border:1px solid transperent;
+	}
+</style>
    </head>
    <body class="sub_page">
       
@@ -28,24 +40,40 @@
          <div class="container">
             <div class="heading_container heading_center">
                <h2>
-                  Our <span>products</span>
+               	<%
+               		List<Cart> list=CartDao.getCartByUser(u.getId());
+               		if(list.size()>0)
+               		{
+               	%>
+                  My <span>Cart</span>
+                 <%
+               		}
+               		else
+               		{
+                 %>
+                 No Products In<span>Cart</span>
+                 <%
+               		}
+                 %>
                </h2>
             </div>
             <div class="row">
             	<%
-            		List<Product> list=ProductDao.getAllProduct();
-            		for(Product p:list)
+            		int net_price=0;
+            		for(Cart c:list)
             		{
+            			net_price=net_price+c.getTotal_price();
+            			Product p=ProductDao.getProductByPid(c.getPid());
             	%>
-               <div class="col-sm-6 col-md-4 col-lg-3">
+               <div class="col-sm-6 col-md-6 col-lg-6">
                   <div class="box">
-                     <div class="option_container">
-                        <div class="options">
+                     
+                        
                            <a href="product-detail.jsp?pid=<%=p.getPid() %>" class="option2">
                            Details
                            </a>
-                        </div>
-                     </div>
+                        
+                     
                      <div class="img-box">
                         <img src="product_images/<%=p.getProduct_image() %>" alt="">
                      </div>
@@ -58,16 +86,26 @@
                           	Price : <%=p.getProduct_price() %>
                         </h6>
                      </div>
+                     <div class="detail-box">
+                     	<form name="change_qty" method="post" action="change_qty.jsp">
+                     		<input type="hidden" name="cid" value="<%=c.getCid()%>">
+                     		<input type="number" name="product_qty" value="<%=c.getProduct_qty()%>" min="1" max="10" onchange="this.form.submit();">
+                     	</form>
+                     	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <h6>
+                          	Total Price : <%=c.getTotal_price() %>
+                        </h6>
+                     </div>
                   </div>
                </div>
              	<%} %>
                
             </div>
-            <div class="btn-box">
-               <a href="">
-               View All products
-               </a>
-            </div>
+           <h1>Net Price : <%=net_price %></h1>
+           <form>
+				<input type="text" id="amount" name="amount" value="<%=net_price%>">
+			</form>
+			<button id="payButton" onclick="CreateOrderID()" class="bttnStyle">Pay Now</button>
          </div>
       </section>
       <!-- end product section -->
@@ -158,5 +196,61 @@
       <script src="js/bootstrap.js"></script>
       <!-- custom js -->
       <script src="js/custom.js"></script>
+      
+      <script type="text/javascript">
+	var xhttp=new XMLHttpRequest();
+	var RazorpayOrderId;
+	function CreateOrderID()
+	{
+		xhttp.open("GET","http://localhost:8081/MyProject/OrderCreation?amount=<%=net_price%>",false);
+		xhttp.send();
+		RazorpayOrderId=xhttp.responseText;
+		OpenCheckOut();
+	}
+</script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script type="text/javascript">
+	
+	
+	function OpenCheckOut()
+	{
+		var amount=document.getElementById("amount").value;
+		var new_amount=parseInt(amount)*100;
+		var options={
+				"key":"rzp_test_KyHMYxnQkLNob0",
+				"amount":new_amount,
+				"currency":"INR",
+				"name":"Tops",
+				"description":"Test",
+				"callback_url":"http://localhost:8081/MyProject/index.jsp?id=<%=u.getId()%>",
+				"prefill":{
+					"name":"Jigar Thakkar",
+					"email":"jigar.thakkar.tops@gmail.com",
+					"contact":"9377614772"
+				},
+				"notes":{
+					"address":"Gandhinagar"
+				},
+				"theme":{
+					"color":"#3399cc"
+				}
+				
+				
+		};
+		var rzp1=new Razorpay(options);
+		rzp1.on('payment.failed',function (response){
+			alert(response.error.code);
+	        alert(response.error.description);
+	        alert(response.error.source);
+	        alert(response.error.step);
+	        alert(response.error.reason);
+	        alert(response.error.metadata.order_id);
+	        alert(response.error.metadata.payment_id);
+		});
+		rzp1.open();
+	    e.preventDefault();
+	}
+</script>
+      
    </body>
 </html>

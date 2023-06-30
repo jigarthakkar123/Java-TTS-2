@@ -3,7 +3,7 @@
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ include file="header.jsp" %>
+<%@ include file="seller-header.jsp" %>
 <!DOCTYPE html>
 <html>
    <head>
@@ -16,7 +16,7 @@
             <div class="row">
                <div class="col-md-12">
                   <div class="full">
-                     <h3>Product Grid</h3>
+                     <h3>Product Details</h3>
                   </div>
                </div>
             </div>
@@ -26,48 +26,47 @@
       <!-- product section -->
       <section class="product_section layout_padding">
          <div class="container">
-            <div class="heading_container heading_center">
-               <h2>
-                  Our <span>products</span>
-               </h2>
-            </div>
+            
             <div class="row">
-            	<%
-            		List<Product> list=ProductDao.getAllProduct();
-            		for(Product p:list)
-            		{
-            	%>
-               <div class="col-sm-6 col-md-4 col-lg-3">
+            	
+            <%
+            	Product p=ProductDao.getProductByPid(Integer.parseInt(request.getParameter("pid")));
+            %>
+               <div class="col-sm-6 col-md-6 col-lg-6">
                   <div class="box">
-                     <div class="option_container">
-                        <div class="options">
-                           <a href="product-detail.jsp?pid=<%=p.getPid() %>" class="option2">
-                           Details
-                           </a>
-                        </div>
-                     </div>
+                     
                      <div class="img-box">
-                        <img src="product_images/<%=p.getProduct_image() %>" alt="">
+                        <img src="product_images/<%=p.getProduct_image()%>" alt="">
                      </div>
                      <div class="detail-box">
-                     	<h6>
-                     		Name: <%=p.getProduct_name() %>
-                     	</h6>
-                     	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <h6>
-                          	Price : <%=p.getProduct_price() %>
-                        </h6>
+                        <h5>
+                           Name : <%=p.getProduct_name() %>
+                        </h5>
                      </div>
+                     <div class="detail-box">
+                        <h5>
+                           Price : <%=p.getProduct_price() %>
+                        </h5>
+                     </div>
+                     <div class="detail-box">
+                        <h5>
+                           Size : <%=p.getProduct_size() %>
+                        </h5>
+                     </div>
+                     <div class="detail-box">
+                        <h5>
+                           Description : <%=p.getProduct_desc() %>
+                        </h5>
+                     </div>
+                     
+                     <a href="seller-product-edit.jsp?pid=<%=p.getPid()%>"><input type="button" value="EDIT" class="btn btn-primary"></a>
+                     <a href="seller-product-delete.jsp?pid=<%=p.getPid()%>"><input type="button" value="DELETE" class="btn btn-danger"></a>
                   </div>
+                  
                </div>
-             	<%} %>
                
             </div>
-            <div class="btn-box">
-               <a href="">
-               View All products
-               </a>
-            </div>
+           
          </div>
       </section>
       <!-- end product section -->

@@ -1,3 +1,5 @@
+<%@page import="com.dao.WishlistDao"%>
+<%@page import="com.bean.Wishlist"%>
 <%@page import="com.dao.ProductDao"%>
 <%@page import="com.bean.Product"%>
 <%@page import="java.util.List"%>
@@ -28,14 +30,29 @@
          <div class="container">
             <div class="heading_container heading_center">
                <h2>
-                  Our <span>products</span>
+               	<%
+               	List<Wishlist> list=WishlistDao.getWishlistByUser(u.getId());
+               		if(list.size()>0)
+               		{
+               	%>
+                  My <span>Wishlist</span>
+                 <%
+               		}
+               		else
+               		{
+                 %>
+                 No Products In<span>Wishlist</span>
+                 <%
+               		}
+                 %>
                </h2>
             </div>
             <div class="row">
             	<%
-            		List<Product> list=ProductDao.getAllProduct();
-            		for(Product p:list)
+            		
+            		for(Wishlist w:list)
             		{
+            			Product p=ProductDao.getProductByPid(w.getPid());
             	%>
                <div class="col-sm-6 col-md-4 col-lg-3">
                   <div class="box">
@@ -63,11 +80,7 @@
              	<%} %>
                
             </div>
-            <div class="btn-box">
-               <a href="">
-               View All products
-               </a>
-            </div>
+           
          </div>
       </section>
       <!-- end product section -->

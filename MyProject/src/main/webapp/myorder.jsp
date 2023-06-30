@@ -1,3 +1,7 @@
+<%@page import="com.dao.CartDao"%>
+<%@page import="com.bean.Cart"%>
+<%@page import="com.dao.WishlistDao"%>
+<%@page import="com.bean.Wishlist"%>
 <%@page import="com.dao.ProductDao"%>
 <%@page import="com.bean.Product"%>
 <%@page import="java.util.List"%>
@@ -7,6 +11,7 @@
 <!DOCTYPE html>
 <html>
    <head>
+   
    </head>
    <body class="sub_page">
       
@@ -28,24 +33,40 @@
          <div class="container">
             <div class="heading_container heading_center">
                <h2>
-                  Our <span>products</span>
+               	<%
+               		List<Cart> list=CartDao.getCartOrder(u.getId());
+               		if(list.size()>0)
+               		{
+               	%>
+                  My <span>Orders</span>
+                 <%
+               		}
+               		else
+               		{
+                 %>
+                 No Products In<span>Order</span>
+                 <%
+               		}
+                 %>
                </h2>
             </div>
             <div class="row">
             	<%
-            		List<Product> list=ProductDao.getAllProduct();
-            		for(Product p:list)
+            		int net_price=0;
+            		for(Cart c:list)
             		{
+            			net_price=net_price+c.getTotal_price();
+            			Product p=ProductDao.getProductByPid(c.getPid());
             	%>
-               <div class="col-sm-6 col-md-4 col-lg-3">
+               <div class="col-sm-6 col-md-6 col-lg-6">
                   <div class="box">
-                     <div class="option_container">
-                        <div class="options">
+                     
+                        
                            <a href="product-detail.jsp?pid=<%=p.getPid() %>" class="option2">
                            Details
                            </a>
-                        </div>
-                     </div>
+                        
+                     
                      <div class="img-box">
                         <img src="product_images/<%=p.getProduct_image() %>" alt="">
                      </div>
@@ -58,16 +79,22 @@
                           	Price : <%=p.getProduct_price() %>
                         </h6>
                      </div>
+                     <div class="detail-box">
+                     	<form name="change_qty" method="post" action="change_qty.jsp">
+                     		<input type="hidden" name="cid" value="<%=c.getCid()%>">
+                     		<input type="number" name="product_qty" value="<%=c.getProduct_qty()%>" min="1" max="10" onchange="this.form.submit();">
+                     	</form>
+                     	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <h6>
+                          	Total Price : <%=c.getTotal_price() %>
+                        </h6>
+                     </div>
                   </div>
                </div>
              	<%} %>
                
             </div>
-            <div class="btn-box">
-               <a href="">
-               View All products
-               </a>
-            </div>
+         
          </div>
       </section>
       <!-- end product section -->
@@ -158,5 +185,8 @@
       <script src="js/bootstrap.js"></script>
       <!-- custom js -->
       <script src="js/custom.js"></script>
+      
+    
+      
    </body>
 </html>

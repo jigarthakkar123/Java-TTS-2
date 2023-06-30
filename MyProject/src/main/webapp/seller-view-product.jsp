@@ -3,7 +3,7 @@
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ include file="header.jsp" %>
+<%@ include file="seller-header.jsp" %>
 <!DOCTYPE html>
 <html>
    <head>
@@ -28,46 +28,42 @@
          <div class="container">
             <div class="heading_container heading_center">
                <h2>
-                  Our <span>products</span>
+                  My <span>products</span>
                </h2>
             </div>
             <div class="row">
             	<%
-            		List<Product> list=ProductDao.getAllProduct();
+            		List<Product> list=ProductDao.getProductBySeller(u.getId());
             		for(Product p:list)
-            		{
+            		{	
             	%>
+            
                <div class="col-sm-6 col-md-4 col-lg-3">
                   <div class="box">
                      <div class="option_container">
                         <div class="options">
-                           <a href="product-detail.jsp?pid=<%=p.getPid() %>" class="option2">
+                           <a href="seller-product-detail.jsp?pid=<%=p.getPid()%>" class="option2">
                            Details
                            </a>
                         </div>
                      </div>
                      <div class="img-box">
-                        <img src="product_images/<%=p.getProduct_image() %>" alt="">
+                        <img src="product_images/<%=p.getProduct_image()%>" alt="">
                      </div>
                      <div class="detail-box">
-                     	<h6>
-                     		Name: <%=p.getProduct_name() %>
-                     	</h6>
-                     	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <h5>
+                           <%=p.getProduct_name() %>
+                        </h5>
                         <h6>
-                          	Price : <%=p.getProduct_price() %>
+                           <%=p.getProduct_price() %>
                         </h6>
                      </div>
                   </div>
+                  
                </div>
-             	<%} %>
-               
+               <%} %>
             </div>
-            <div class="btn-box">
-               <a href="">
-               View All products
-               </a>
-            </div>
+           
          </div>
       </section>
       <!-- end product section -->

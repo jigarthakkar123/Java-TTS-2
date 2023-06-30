@@ -1,6 +1,8 @@
+<%@page import="com.dao.ProductDao"%>
+<%@page import="com.bean.Product"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ include file="header.jsp" %>
+<%@ include file="seller-header.jsp" %>
 <!DOCTYPE html>
 <html>
    <head>
@@ -14,7 +16,7 @@
             <div class="row">
                <div class="col-md-12">
                   <div class="full">
-                     <h3>Login</h3>
+                     <h3>Edit Product</h3>
                   </div>
                </div>
             </div>
@@ -28,23 +30,116 @@
             <div class="row">
                <div class="col-lg-8 offset-lg-2">
                   <div class="full">
-                  		<b style="color: blue">
+                  <b style="color: blue">
                   		<%
+                  			Product p=ProductDao.getProductByPid(Integer.parseInt(request.getParameter("pid")));
                   			if(request.getAttribute("msg")!=null)
                   			{
                   				out.println(request.getAttribute("msg"));
                   			}
                   		%>
                   		</b>
-                     <form action="UserController" method="post">
+                     <form action="ProductController" method="post" enctype="multipart/form-data">
                         <fieldset>
-                          
-                           <input type="email" placeholder="Enter Email" name="email" required />
-                        
-                           <input type="password" placeholder="Enter Password" name="password" required />
-                           
-                           <input type="submit" name="action" value="Login"/>
-                           <a href="forgotPassword.jsp">Forgot Password</a>
+                        	<input type="hidden" name="pid" value="<%=p.getPid()%>">
+                        	<select name="product_category">
+                        		<%
+                        			if(p.getProduct_category().equals("Men"))
+                        			{
+                        		%>
+                        				<option>---Select Category---</option>
+                        				<option value="Men" selected="selected">Men</option>
+                        				<option value="Women">Women</option>
+                        				<option value="Kids">Kids</option>
+                        		<%		
+                        			}
+                        			else if(p.getProduct_category().equals("Women"))
+                        			{
+                        		%>
+                        				<option>---Select Category---</option>
+                        				<option value="Men">Men</option>
+                        				<option value="Women" selected="selected">Women</option>
+                        				<option value="Kids">Kids</option>
+                        		<%		
+                        			}
+                        			else if(p.getProduct_category().equals("Kids"))
+                        			{
+                        		%>
+                        				<option>---Select Category---</option>
+                        				<option value="Men">Men</option>
+                        				<option value="Women">Women</option>
+                        				<option value="Kids" selected="selected">Kids</option>
+                        		<%		
+                        			}
+                        		%>
+                        		
+                        	</select>
+                        	
+                           <input type="text" value="<%=p.getProduct_name()%>" name="product_name" />
+                           <input type="text" value="<%=p.getProduct_price()%>" name="product_price" />
+                           <textarea placeholder="Enter Product Description" name="product_desc"><%=p.getProduct_desc() %></textarea>
+                           <img src="product_images/<%=p.getProduct_image()%>" width="100px" height="100px">
+                           <select name="product_size">
+                           		<%
+                           			if(p.getProduct_size().equals("S"))
+                           			{
+                           		%>
+                           				<option>---Select Size---</option>
+                        				<option value="S" selected="selected">S</option>
+                        				<option value="M">M</option>
+                        				<option value="L">L</option>
+                        				<option value="XL">XL</option>
+                        				<option value="XXL">XXL</option>
+                           		<%		
+                           			}
+                           			else if(p.getProduct_size().equals("M"))
+                           			{
+                           		%>
+                           				<option>---Select Size---</option>
+                        				<option value="S">S</option>
+                        				<option value="M" selected="selected">M</option>
+                        				<option value="L">L</option>
+                        				<option value="XL">XL</option>
+                        				<option value="XXL">XXL</option>
+                           		<%		
+                           			}
+                           			else if(p.getProduct_size().equals("L"))
+                           			{
+                           		%>
+                           				<option>---Select Size---</option>
+                        				<option value="S">S</option>
+                        				<option value="M">M</option>
+                        				<option value="L" selected="selected">L</option>
+                        				<option value="XL">XL</option>
+                        				<option value="XXL">XXL</option>
+                           		<%		
+                           			}
+                           			else if(p.getProduct_size().equals("XL"))
+                           			{
+                           		%>
+                           				<option>---Select Size---</option>
+                        				<option value="S">S</option>
+                        				<option value="M">M</option>
+                        				<option value="L">L</option>
+                        				<option value="XL" selected="selected">XL</option>
+                        				<option value="XXL">XXL</option>
+                           		<%		
+                           			}
+                           			else if(p.getProduct_size().equals("XXL"))
+                           			{
+                           		%>
+                           				<option>---Select Size---</option>
+                        				<option value="S">S</option>
+                        				<option value="M">M</option>
+                        				<option value="L">L</option>
+                        				<option value="XL">XL</option>
+                        				<option value="XXL" selected="selected">XXL</option>
+                           		<%		
+                           			}
+                           		%>
+                        		
+                        	</select>
+                           <input type="submit" name="action" value="Update Product" />
                         </fieldset>
                      </form>
                   </div>
@@ -166,9 +261,5 @@
       <script src="js/bootstrap.js"></script>
       <!-- custom js -->
       <script src="js/custom.js"></script>
-      
-      
-      
-      
    </body>
 </html>
