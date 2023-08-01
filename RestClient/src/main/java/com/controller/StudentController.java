@@ -1,6 +1,7 @@
 package com.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,6 +17,7 @@ import org.glassfish.jersey.client.ClientConfig;
 
 import com.bean.Student;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 public class StudentController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -49,7 +51,33 @@ public class StudentController extends HttpServlet {
 			String student=gson.toJson(s);
 			Response rs=target.path("student").path("insert").request().post(Entity.json(student));
 			String result=rs.readEntity(String.class);
-			System.out.println(result);
+			if(rs.getStatus()==200)
+			{
+				showStudent(request, response);
+			}
+			else
+			{
+				System.out.println(result);
+			}
+		}
+		else if(action.equalsIgnoreCase("delete"))
+		{
+			int id=Integer.parseInt(request.getParameter("id"));
+			Response rs=target.path("student").path("delete").queryParam("sid", id).request().get();
+			if(rs.getStatus()==200)
+			{
+				showStudent(request, response);
+			}
+		}
+	}
+	protected void showStudent(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Response rs=target.path("student").path("getall").request().get();
+		String result=rs.readEntity(String.class);
+		if(rs.getStatus()==200)
+		{
+			List<Student> list=gson.fromJson(result,new TypeToken<List<Student>>() {}.getType());
+			request.setAttribute("list", list);
+			request.getRequestDispatcher("show.jsp").forward(request, response);
 		}
 	}
 

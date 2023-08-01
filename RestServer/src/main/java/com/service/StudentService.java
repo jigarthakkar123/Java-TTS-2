@@ -1,9 +1,13 @@
 package com.service;
 
+import java.util.List;
+
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.bean.Student;
@@ -31,5 +35,31 @@ public class StudentService {
 		{
 			return "Data Insertion Failed";
 		}
+	}
+	
+	@Path("delete")
+	@Produces(MediaType.TEXT_PLAIN)
+	@GET
+	public String deleteStudent(@QueryParam("sid")int id)
+	{
+		
+		int result=StudentDao.deleteData(id);
+		if(result>0)
+		{
+			return "Data Deleted Successfully";
+		}
+		else
+		{
+			return "Data Deletion Failed";
+		}
+	}
+	
+	@Path("getall")
+	@Produces(MediaType.APPLICATION_JSON)
+	@GET
+	public String getAllStudent()
+	{
+		List<Student> list=StudentDao.getAllStudent();
+		return gson.toJson(list);
 	}
 }
